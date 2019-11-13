@@ -1,0 +1,33 @@
+{
+    "__default__" :
+    {
+      "mem" : 2000,
+      "n" : 1,
+	    "tasks" : 1,
+      "name" : "{rule}-{wildcards}",
+	    "logfile": "log/snake-{rule}-{wildcards}-%j.out"
+    },
+    "fastqc" :
+    {
+	    "mem" : 8000
+    },
+    "umi_create_whitelist" :
+    {
+	    "mem": 8000,
+	    "tasks": 8
+    },
+    "align" :
+    {
+	    "mem": 48000,
+      "tasks": 8
+    },
+    "index_bam" :
+    {
+      "mem": 8000,
+	    "tasks": 8
+    },
+    "collect_rna_metrics" :
+    {
+      "mem": 14000
+    }
+}

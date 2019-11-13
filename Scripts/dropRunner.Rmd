@@ -1,0 +1,103 @@
+---
+title: "dropRunner Report"
+output: 
+  html_document:
+    theme: flatly
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+  sampleID: ""
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4, fig.align = 'center')
+```
+
+```{r, echo=F}
+suppressMessages(library(ggplot2))
+suppressMessages(library(scales))
+suppressMessages(library(kableExtra))
+theme_set(theme_bw())
+
+config <- read.delim('config.yaml',sep=':', header=F, stringsAsFactors = F)
+solo.out.sum <- read.delim(paste0('output/',params$sampleID,'_Solo.out/GeneFull/Summary.csv'),sep=',', header=F, stringsAsFactors = F)
+UMIperCell <- read.delim(paste0('output/',params$sampleID,'_Solo.out/GeneFull/UMIperCellSorted.txt'), sep=',', header=F, stringsAsFactors = F)
+picard <- read.delim(paste0('output/qc_data/',params$sampleID,'_RNAmetrics.picard.txt'), skip = 6)[1,]
+
+```
+
+# Summary
+
+```{r, echo=F}
+n <- as.integer(solo.out.sum[10,'V2'])
+meanReads <- as.integer(solo.out.sum[13,'V2'])
+project <- config[8,'V2']
+build <- config[9, 'V2']
+protocol <- config[10,'V2']
+```
+#### Protocol: $\color{blue}{\text{`r protocol`}}$
+#### Project Name: $\color{blue}{\text{`r project`}}$
+#### Sample: $\color{blue}{\text{`r params$sampleID`}}$
+#### Transcriptome: $\color{blue}{\text{`r build`}}$
+#### Estimated number of cells: $\color{green}{\text{`r n`}}$
+#### Mean Reads per Cell: $\color{green}{\text{`r meanReads`}}$
+
+***
+
+## Sequencing
+
+```{r, echo=F, fig.align='center'}
+seq.summary <- solo.out.sum[c(1:7),]
+seq.summary[2:7,'V2'] <- paste0(round(seq.summary[2:7,'V2']*100, digits = 1), '%')
+colnames(seq.summary) <- c('Features','Statistics')
+knitr::kable(seq.summary,row.names = F,caption = 'Sequencing summary') %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+```
+
+***
+
+## Cells
+
+```{r, echo=F, fig.align='center'}
+cell.summary <- solo.out.sum[c(10,12,13,17,18,20),]
+cell.summary[2,'V2'] <- paste0(round(cell.summary[2,'V2']*100, digits = 1), '%')
+colnames(cell.summary) <- c('Features','Statistics')
+knitr::kable(cell.summary,row.names = F,caption = 'Summary of cells detected') %>% kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+```
+
+```{r, echo=F}
+n <- as.integer(cell.summary[1,'Statistics'])
+UMIperCell$r <- rev(rank(UMIperCell$V1))
+UMIperCell$type <- ifelse(UMIperCell$r >= n, 'black','grey')
+ggplot(UMIperCell, aes(x=r, y=V1, color=type)) + geom_point() + 
+  theme(text = element_text(size=14), legend.position = 'none') +
+  scale_y_continuous(trans = log10_trans(),
+    breaks = trans_breaks("log10", function(x) 10^x),
+    labels = trans_format("log10", math_format(10^.x))) +
+  scale_color_manual(values=c('grey','black')) +
+  xlab('Barcodes') + ylab('UMIs Counts')
+```
+
+***
+
+## Mapping
+
+```{r, echo=F}
+genic <- picard$PCT_CODING_BASES + picard$PCT_UTR_BASES + picard$PCT_INTRONIC_BASES
+exonic <-  picard$PCT_CODING_BASES + picard$PCT_UTR_BASES
+intronic <- picard$PCT_INTRONIC_BASES
+intergenic <- picard$PCT_INTERGENIC_BASES
+pct_cov <- as.data.frame(rbind(genic, exonic, intronic, intergenic)) 
+colnames(pct_cov) <- "pct_coverage"
+pct_cov$feature <- c("genic", "exonic", "intronic", "intergenic")
+
+ggplot(pct_cov, aes(feature, pct_coverage, label = pct_coverage)) +
+  geom_bar(stat = "Identity", position = "dodge", fill = "lightblue") +
+  scale_x_discrete(limits=pct_cov$feature) +
+  ylab("Fraction of Reads") +
+  xlab("") +
+  geom_text(size = 3, position = position_stack(vjust = 0.5)) + 
+  theme(text = element_text(size=14),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())
+```
+
+

@@ -1,0 +1,133 @@
+#!/software/Anaconda3-4.3.0-el7-x86_64/bin/python3
+
+import os
+import argparse
+
+install_dir = os.path.dirname(os.path.realpath(__file__))
+work_dir = os.getcwd()
+
+def check_gzip(files):
+    '''
+    Checks if all given files are in gzip format
+    '''
+    for f in files:
+        if f.split('.')[-1] != 'gz':
+            return False
+    return True
+
+def make_config(args, install_dir, work_dir):
+
+    config=f"""proj_dir: {work_dir}/
+genome_index: {install_dir}/STAR_indeces/hg38_noalt_juncGencodeV27_STAR_2.7.1_61/
+refFlat: {install_dir}/refFlat/hg38_UCSC.refFlat
+scripts: {install_dir}/Scripts/
+cell_num: 10000
+barcode: "CCCCCCCCCCCCNNNNNNNN"
+dir_log: log/
+Sample: {args.sample}
+Protocol: {args.protocol}
+    """
+    with open('config.yaml', 'w') as f:
+         f.write(config)
+
+def make_submit_snakemake(install_dir, work_dir):
+    '''
+    Creates the SLURM that submits Snakefile on the cluster
+    '''
+    cmd =f"""#!/bin/bash
+
+#SBATCH --job-name=snakemake
+#SBATCH --output=snakelog.out
+#SBATCH --time=36:00:00
+#SBATCH --partition=broadwl
+#SBATCH --mem=4G
+#SBATCH --tasks-per-node=4
+
+source /project2/onibasu/dropseqRunner/miniconda3/bin/activate dropRunner
+
+snakemake \\
+    -kp \\
+    --ri \\
+    -j 150 \\
+    --latency-wait 150 \\
+    --cluster-config {install_dir}/cluster_solo.json \\
+    -c "sbatch \\
+        --mem={{cluster.mem}} \\
+        --nodes={{cluster.n}} \\
+        --tasks-per-node={{cluster.tasks}} \\
+        --partition=broadwl \\
+        --job-name={{cluster.name}} \\
+    --output={{cluster.logfile}}" \\
+    -s {install_dir}/Snakefile_solo.smk \\
+    --configfile {work_dir}/config.yaml
+"""
+
+    with open('submit_snakemake.sbatch', 'w') as f:
+        f.write(cmd)
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--R1', type=str, help='Absolute path to gzipped read 1 fastq file (comma-delimited list of files if multiple.) REQUIRED')
+    parser.add_argument('--R2', type=str, help='Absolute path to gzipped read 2 fastq file (comma-delimited list of files if multiple.) REQUIRED')
+    parser.add_argument('--protocol', type=str, help='Protocol for producing data. Currently only drop-seq is available. Default: drop')
+    parser.add_argument('--cluster', type=str, help='Will this run on a cluster or not? Options: yes or no. Default: no')
+    parser.add_argument('--sample', type=str, help='sample name. Optional.')
+    
+    args = parser.parse_args()
+    if args.protocol == None:
+        args.protocol = 'drop'
+    if args.cluster == None:
+        args.cluster = 'no'
+    if args.sample == None:
+        args.sample = 'NAME_NOT_PROVIDED'
+        
+    if args.R1 == None or args.R2 == None:
+      raise Exception('Please provide gzipped fastq files for read 1 and read 2.')
+      
+    if os.path.exists('.fastq'):
+      os.system('rm -r .fastq')
+    if os.path.exists('.snakemake'):
+      os.system('rm -r .snakemake')
+      
+    os.system('mkdir .fastq')    
+
+    r1, r2 = args.R1.split(','), args.R2.split(',')
+    if not os.path.isabs(r1[0]) or not os.path.isabs(r2[0]):
+      msg = 'Please give absolute path to the fastq files. No relative paths!'
+      raise Exception(msg)
+      
+    if len(r1) != len(r2):
+        msg='Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
+        raise Exception(msg)
+
+    if len(r1) > 1:
+        if check_gzip(r1) and check_gzip(r2):
+            
+            for R1,R2 in zip(r1, r2):
+                f1_name = R1.split('/')[-1]
+                f2_name = R2.split('/')[-1]
+                os.system(f'ln -s {R1} .fastq/{f1_name}')
+                os.system(f'ln -s {R2} .fastq/{f2_name}')
+
+        else:
+            msg = 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
+            raise TypeError(msg)
+
+    else:
+        f1_name = r1[0].split('/')[-1]
+        f2_name = r2[0].split('/')[-1]
+        os.system(f'ln -s {r1[0]} .fastq/{f1_name}')
+        os.system(f'ln -s {r2[0]} .fastq/{f2_name}')
+
+    make_config(args, install_dir, work_dir)
+    
+    if args.cluster == 'yes':
+        make_submit_snakemake(install_dir, work_dir)
+        print('Submitting snakemake job..')
+        os.system('sbatch submit_snakemake.sbatch')
+        print('Snakemake job has been submitted to the cluster.\nType "qstat -u CNETID" to see the progress of the snakefile.')
+        
+    else:
+        print('Running snakemake directly on this node. This may not finish because alignment requires >30GB of RAM.')
+        os.system(f'source /project2/onibasu/dropseqRunner/miniconda3/bin/activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
