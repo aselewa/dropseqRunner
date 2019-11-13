@@ -1,4 +1,3 @@
-#!/software/Anaconda3-4.3.0-el7-x86_64/bin/python3
 
 import os
 import argparse
