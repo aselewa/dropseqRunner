@@ -7,6 +7,7 @@ To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python 
 Use the provided `environmeny.yaml` file to set up the conda environment.
 
 ```
+git clone 
 conda env create -f environment.yaml
 ```
 
