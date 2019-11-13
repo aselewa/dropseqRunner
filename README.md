@@ -2,6 +2,15 @@
 
 To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python 3.x is also required but that should have been installed with `conda`. Note that this pipeline has only been tested on 64bit Linux. Use on MacOS will likely result in errors, while Windows is completely unsupported.
 
+`miniconda3` is a light version of `Anaconda`. To install on 64Linux, do the following:
+
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+Follow the instructions to make sure the `conda` executable is in your path!
+
 ### 0. Set up environment
 
 Use the provided `environmeny.yaml` file to set up the conda environment.
