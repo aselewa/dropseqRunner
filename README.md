@@ -30,7 +30,7 @@ python makeref.py --fasta refgenome.fa
                    --cluster yes
 ```
 
-This will run on SLURM using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
+This will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
 This command will create a folder called `myref_indeces`. You will need this folder in the next step.
 
 ### 2. Run the pipeline
@@ -45,6 +45,8 @@ python dropRunner.py  --R1 path/to/sample_001_R1.fastq.gz
                       --sample my_example_project
 ```
 
+
+Once again, this will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
 
 **NOTE 1**: Paths to fastq files must be absolute paths. You may give multiple, comma-delimited fastq files for parallel processing. 
 
