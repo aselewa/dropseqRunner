@@ -12,9 +12,9 @@ conda env create -f environment.yaml
 
 Once it is finished, confirm it is installed:
 
-``
+```
 source activate dropRunner
-``
+```
 
 ### 1. Make reference genome indeces
 
