@@ -45,5 +45,5 @@ python dropRunner.py  --R1 path/to/sample_001_R1.fastq.gz
 
 **NOTE 1**: Paths to fastq files must be absolute paths. You may give multiple, comma-delimited fastq files for parallel processing. 
 
-**NOTE 2**: Make sure your fastq files match the following pattern: **{project_name}_001.R1.fastq.gz** where {project_name} is a unique identifider.
+**NOTE 2**: Make sure your fastq files match the following pattern: **{project_name}_001_R1.fastq.gz** where {project_name} is a unique identifider.
 
