@@ -1,4 +1,3 @@
-#!/software/Anaconda3-4.3.0-el7-x86_64/bin/python3
 
 import os
 import argparse
@@ -18,8 +17,8 @@ def check_gzip(files):
 def make_config(args, install_dir, work_dir):
 
     config=f"""proj_dir: {work_dir}/
-genome_index: {install_dir}/STAR_indeces/hg38_noalt_juncGencodeV27_STAR_2.7.1_61/
-refFlat: {install_dir}/refFlat/hg38_UCSC.refFlat
+genome_index: {args.indeces}/
+refFlat: {args.indeces}/refFlat_for_picard.refFlat
 scripts: {install_dir}/Scripts/
 cell_num: 10000
 barcode: "CCCCCCCCCCCCNNNNNNNN"
@@ -43,7 +42,7 @@ def make_submit_snakemake(install_dir, work_dir):
 #SBATCH --mem=4G
 #SBATCH --tasks-per-node=4
 
-source /project2/onibasu/dropseqRunner/miniconda3/bin/activate dropRunner
+source activate dropRunner
 
 snakemake \\
     -kp \\
@@ -70,6 +69,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--R1', type=str, help='Absolute path to gzipped read 1 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--R2', type=str, help='Absolute path to gzipped read 2 fastq file (comma-delimited list of files if multiple.) REQUIRED')
+    parser.add_argument('--indeces', type=str, help='Indeces folder made by makeref.py')
     parser.add_argument('--protocol', type=str, help='Protocol for producing data. Currently only drop-seq is available. Default: drop')
     parser.add_argument('--cluster', type=str, help='Will this run on a cluster or not? Options: yes or no. Default: no')
     parser.add_argument('--sample', type=str, help='sample name. Optional.')
@@ -84,6 +84,9 @@ if __name__ == '__main__':
         
     if args.R1 == None or args.R2 == None:
       raise Exception('Please provide gzipped fastq files for read 1 and read 2.')
+    
+    if args.indeces == None:
+        raise Exception('Please provide indeces made by the makeref.py function!')
       
     if os.path.exists('.fastq'):
       os.system('rm -r .fastq')
@@ -130,4 +133,4 @@ if __name__ == '__main__':
         
     else:
         print('Running snakemake directly on this node. This may not finish because alignment requires >30GB of RAM.')
-        os.system(f'source /project2/onibasu/dropseqRunner/miniconda3/bin/activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
+        os.system(f'source activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
