@@ -7,7 +7,8 @@ To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python 
 Use the provided `environmeny.yaml` file to set up the conda environment.
 
 ```
-git clone 
+git clone git@github.com:aselewa/dropseqRunner.git
+cd dropseqRunner
 conda env create -f environment.yaml
 ```
 
