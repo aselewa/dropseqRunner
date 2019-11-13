@@ -104,24 +104,16 @@ if __name__ == '__main__':
         msg='Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
         raise Exception(msg)
 
-    if len(r1) > 1:
-        if check_gzip(r1) and check_gzip(r2):
-            
-            for R1,R2 in zip(r1, r2):
-                f1_name = R1.split('/')[-1]
-                f2_name = R2.split('/')[-1]
-                os.system(f'ln -s {R1} .fastq/{f1_name}')
-                os.system(f'ln -s {R2} .fastq/{f2_name}')
-
-        else:
-            msg = 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
-            raise TypeError(msg)
-
+    if check_gzip(r1) and check_gzip(r2):
+        
+        for R1,R2 in zip(r1, r2):
+            f1_name = R1.split('/')[-1]
+            f2_name = R2.split('/')[-1]
+            os.system(f'ln -s {R1} .fastq/{f1_name}')
+            os.system(f'ln -s {R2} .fastq/{f2_name}')
     else:
-        f1_name = r1[0].split('/')[-1]
-        f2_name = r2[0].split('/')[-1]
-        os.system(f'ln -s {r1[0]} .fastq/{f1_name}')
-        os.system(f'ln -s {r2[0]} .fastq/{f2_name}')
+        msg = 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
+        raise TypeError(msg)
 
     make_config(args, install_dir, work_dir)
     
