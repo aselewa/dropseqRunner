@@ -24,7 +24,10 @@ Use `makeref.py` to create indeces for your reference genome of interest. You wi
 * reference genome GTF annotations (you can get this from ENCODE)
 
 ```
-python makeref.py --fasta refgenome.fa --gtf annots.gtf --outDir myref_indeces --cluster yes
+python makeref.py --fasta refgenome.fa 
+                   --gtf annots.gtf 
+                   --outDir myref_indeces 
+                   --cluster yes
 ```
 
 This will run on SLURM using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
