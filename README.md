@@ -32,7 +32,7 @@ source activate dropRunner
 Use `makeref.py` to create indeces for your reference genome of interest. You will need two things:
 
 * fasta file of reference genome
-* reference genome GTF annotations (you can get this from ENCODE)
+* reference genome GTF annotations (you can get this from [ENCODE](https://www.gencodegenes.org/human/))
 
 ```
 python makeref.py --fasta refgenome.fa 
