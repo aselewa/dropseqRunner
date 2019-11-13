@@ -18,13 +18,13 @@ if __name__ == '__main__':
     if args.cluster == None:
       args.cluster = 'no'
     
-    if os.path.exists('STAR_indeces/'):
-      os.system('rm -r STAR_indeces/')
+    if os.path.exists(args.outDir):
+      os.system(f'rm -r {args.outDir}')
     
     print('Setting up directory and creating auxililary files..')
-    os.system('mkdir STAR_indeces')
+    os.system(f'mkdir {args.outDir}')
     os.system(f'source activate dropRunner; gtfToGenePred {args.gtf} tmp -genePredExt')
-    cmd = """awk '{print $12"\t"$0}' tmp | cut -f1-11 > STAR_indeces/refFlat_for_picard.refFlat; rm tmp"""
+    cmd = f"""awk '{{print $12"\t"$0}}' tmp | cut -f1-11 > {args.outDir}/refFlat_for_picard.refFlat; rm tmp"""
     os.system(cmd)
     
     if args.cluster == 'yes':
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 #SBATCH --tasks-per-node=4
 
 source activate dropRunner
-STAR --runThreadN 4 --runMode genomeGenerate --genomeDir STAR_indeces/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 74
+STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59
 """
 
         with open('generate_indeces.sbatch', 'w') as f:
@@ -52,4 +52,4 @@ STAR --runThreadN 4 --runMode genomeGenerate --genomeDir STAR_indeces/ --genomeF
     else:
       
       print('Genome index generation will run locally on this machine. This may not complete due to STARs large memory requirement.')
-      os.system(f'source activate dropRunner; STAR --runThreadN 1 --runMode genomeGenerate --genomeDir STAR_indeces/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59')
+      os.system(f'source activate dropRunner; STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59')

@@ -18,3 +18,5 @@ dependencies:
     - r-rmarkdown
     - r-ggplot2
     - r-kableextra
+    - r-seurat
+    - r-dplyr
