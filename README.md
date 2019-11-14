@@ -28,7 +28,8 @@ echo $PATH
 If you don't see something with `../miniconda3/bin/`, then you need to add these manually by typing:
 
 ```
-export PATH=path/to/miniconda3/bin/:$PATH
+echo 'export PATH=PATH/TO/miniconda3/bin/:$PATH' >> ~/.bashrc'
+source ~/.bashrc
 ```
 
 ### 0. Set up environment
