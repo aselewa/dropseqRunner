@@ -42,7 +42,7 @@ def make_submit_snakemake(install_dir, work_dir):
 #SBATCH --mem=4G
 #SBATCH --tasks-per-node=4
 
-source activate dropRunner
+conda activate dropRunner
 
 snakemake \\
     -kp \\
@@ -125,4 +125,4 @@ if __name__ == '__main__':
         
     else:
         print('Running snakemake directly on this node. This may not finish because alignment requires >30GB of RAM.')
-        os.system(f'source activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
+        os.system(f'conda activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')

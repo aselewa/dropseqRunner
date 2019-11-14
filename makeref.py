@@ -39,7 +39,7 @@ if __name__ == '__main__':
 #SBATCH --mem=32G
 #SBATCH --tasks-per-node=4
 
-source activate dropRunner
+conda activate dropRunner
 STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59
 """
 
@@ -52,4 +52,4 @@ STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genome
     else:
       
       print('Genome index generation will run locally on this machine. This may not complete due to STARs large memory requirement.')
-      os.system(f'source activate dropRunner; STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59')
+      os.system(f'conda activate dropRunner; STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59')
