@@ -31,9 +31,6 @@ qc_data = output + "qc_data/"
 cell_stats = pd + "cell_stats/"
 reports = pd + "reports/"
 
-#make sure the project directory actually exists
-#assert os.path.exists(pd), "Project directory exists"
-
 # Directory to send log files. Needs to be created manually since it
 # is not a file created by a Snakemake rule.
 dir_log = config["dir_log"]

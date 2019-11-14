@@ -2,14 +2,20 @@
 
 To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python 3.x is also required but that should have been installed with `conda`. Note that this pipeline has only been tested on 64bit Linux. Use on MacOS will likely result in errors, while Windows is completely unsupported.
 
+#### Set up conda
+
+You may **skip** this if you already have conda installed.
+ 
 `miniconda3` is a light version of `Anaconda`. To install on 64Linux, do the following:
 
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
 ```
 
 Follow the instructions to make sure the `conda` executable is in your path!
+
 
 ### 0. Set up environment
 
@@ -20,6 +26,8 @@ git clone git@github.com:aselewa/dropseqRunner.git
 cd dropseqRunner
 conda env create -f environment.yaml
 ```
+
+This may take some time depending on your environment. A fresh conda installation should take about 5 minutes.
 
 Once it is finished, confirm it is installed:
 
@@ -65,3 +73,11 @@ Once again, this will run on the RCC midway2 using the `broadwl` partition. If y
 
 **NOTE 2**: Make sure your fastq files match the following pattern: **{project_name}_001_R1.fastq.gz** where {project_name} is a unique identifider.
 
+### 3. Output
+
+There are two pieces of information that most users will need:
+
+* html reports
+* count matrices
+
+The html report is in `reports/`. The count matrices are in `output/{project_name}_Solo.out`. There are two types of count matrices: `filtered` and `raw`. The raw matrix contains all valid barcodes, while filtered contains only barcodes with a certain number of UMI. This threshold is determined by `STARsolo` using a hueristic approach.
