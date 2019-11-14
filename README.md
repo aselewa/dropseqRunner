@@ -27,7 +27,7 @@ cd dropseqRunner
 conda env create -f environment.yaml
 ```
 
-This may take some time depending on your environment. A fresh conda installation should take about 5 minutes.
+This may take some time depending on your environment. A fresh conda installation should take about 10-15 minutes.
 
 Once it is finished, confirm it is installed:
 
