@@ -40,7 +40,7 @@ if __name__ == '__main__':
 #SBATCH --error=genome_index.error
 #SBATCH --time=10:00:00
 #SBATCH --partition=broadwl
-#SBATCH --mem=32G
+#SBATCH --mem=50G
 #SBATCH --tasks-per-node=4
 
 source activate dropRunner
