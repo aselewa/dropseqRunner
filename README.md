@@ -27,13 +27,9 @@ cd dropseqRunner
 conda env create -f environment.yaml
 ```
 
-This may take some time depending on your environment. A fresh conda installation should take about 10-15 minutes.
+This may take some time depending on your environment. A fresh conda installation should take about 10-15 minutes. 
 
-Once it is finished, confirm it is installed:
-
-```
-source activate dropRunner
-```
+Once it is finished, proceed to the next step. You do not need to activate the environment.
 
 ### 1. Make reference genome indeces
 

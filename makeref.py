@@ -23,7 +23,7 @@ if __name__ == '__main__':
     
     print('Setting up directory and creating auxililary files..')
     os.system(f'mkdir {args.outDir}')
-    os.system(f'conda activate dropRunner; gtfToGenePred {args.gtf} tmp -genePredExt')
+    os.system(f'source activate dropRunner; gtfToGenePred {args.gtf} tmp -genePredExt')
     cmd = f"""awk '{{print $12"\t"$0}}' tmp | cut -f1-11 > {args.outDir}/refFlat_for_picard.refFlat; rm tmp"""
     os.system(cmd)
     
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 #SBATCH --mem=32G
 #SBATCH --tasks-per-node=4
 
-conda activate dropRunner
+source activate dropRunner
 STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59
 """
 
@@ -52,4 +52,4 @@ STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genome
     else:
       
       print('Genome index generation will run locally on this machine. This may not complete due to STARs large memory requirement.')
-      os.system(f'conda activate dropRunner; STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59')
+      os.system(f'source activate dropRunner; STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59')
