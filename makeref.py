@@ -12,7 +12,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     if args.fasta == None or args.gtf == None:
-      msg='Please provide a valid gzippzed fasta file, and a genome annotation file in GTF format.'
+      msg='Please provide a valid fasta file, and a genome annotation file in GTF format.'
       raise Exception(msg)
       
     if args.cluster == None:
@@ -26,7 +26,11 @@ if __name__ == '__main__':
     os.system(f'source activate dropRunner; gtfToGenePred {args.gtf} tmp -genePredExt')
     cmd = f"""awk '{{print $12"\t"$0}}' tmp | cut -f1-11 > {args.outDir}/refFlat_for_picard.refFlat; rm tmp"""
     os.system(cmd)
-    
+     
+    if os.stat(f'{args.outDir}/refFlat_for_picard.refFlat').st_size == 0:
+        msg = 'FAILED to create auxililary files. Check above for error messages. Make sure miniconda3/bin/ is in your path, and make sure that you supplied a valid GTF file.'
+        raise Exception(msg)
+
     if args.cluster == 'yes':
       
         cmd =f"""#!/bin/bash

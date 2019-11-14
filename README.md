@@ -13,7 +13,7 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
-Make sure that `miniconda3/bin/` and `miniconda3/condabin/` are in your `PATH`! They are usually added to your `.bashrc` by the conda installer automatically. To apply the changes, type:
+Make sure that `miniconda3/bin/` is in your `PATH`! It is usually added to your `.bashrc` by the conda installer automatically. To apply the changes, type:
 
 ```
 source ~/.bashrc
@@ -25,11 +25,10 @@ Check your path:
 echo $PATH
 ```
 
-If you don't see something with `../miniconda3/bin/` nor `../miniconda3/condabin/`, then you need to add these manually by typing:
+If you don't see something with `../miniconda3/bin/`, then you need to add these manually by typing:
 
 ```
 export PATH=path/to/miniconda3/bin/:$PATH
-export PATH=path/to/miniconda4/condabin/:$PATH
 ```
 
 ### 0. Set up environment
