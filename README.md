@@ -2,7 +2,7 @@
 
 To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python 3.x is also required but that should have been installed with `conda`. Note that this pipeline has only been tested on 64bit Linux. Use on MacOS will likely result in errors, while Windows is completely unsupported.
 
-#### Set up conda
+### Setting up conda
 
 You may **skip** this if you already have conda installed.
  
@@ -11,11 +11,26 @@ You may **skip** this if you already have conda installed.
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+** Make sure that `miniconda3/bin/` and `miniconda3/condabin/` are in your `PATH`! ** They are usually added to your `.bashrc` by the conda installer automatically. To apply the changes, type:
+
+```
 source ~/.bashrc
 ```
 
-Follow the instructions to make sure the `conda` executable is in your path!
+Check your path:
 
+```
+echo $PATH
+```
+
+If you don't see something with `../miniconda3/bin/` nor `../miniconda3/condabin/`, then you need to add these manually by typing:
+
+```
+export PATH=path/to/miniconda3/bin/:$PATH
+export PATH=path/to/miniconda4/condabin/:$PATH
+```
 
 ### 0. Set up environment
 
