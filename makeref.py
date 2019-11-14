@@ -23,7 +23,7 @@ if __name__ == '__main__':
     
     print('Setting up directory and creating auxililary files..')
     os.system(f'mkdir {args.outDir}')
-    os.system(f'source activate dropRunner; gtfToGenePred {args.gtf} tmp -genePredExt')
+    os.system(f'conda activate dropRunner; gtfToGenePred {args.gtf} tmp -genePredExt')
     cmd = f"""awk '{{print $12"\t"$0}}' tmp | cut -f1-11 > {args.outDir}/refFlat_for_picard.refFlat; rm tmp"""
     os.system(cmd)
     
