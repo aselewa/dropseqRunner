@@ -34,7 +34,7 @@ source ~/.bashrc
 
 ### 0. Set up environment
 
-Use the provided `environmeny.yaml` file to set up the conda environment.
+Use the provided `environment.yaml` file to set up the conda environment.
 
 ```
 git clone git@github.com:aselewa/dropseqRunner.git
