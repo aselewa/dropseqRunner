@@ -47,10 +47,10 @@ source activate dropRunner
 STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59
 """
 
-        with open('generate_indeces.sbatch', 'w') as f:
+        with open('generate_indices.sbatch', 'w') as f:
             f.write(cmd)
         
-        os.system('sbatch generate_indeces.sbatch')
+        os.system('sbatch generate_indices.sbatch')
         print('Index generation has been submitted to the cluster. Type qstat -u CNETID to check the status.')
     
     else:

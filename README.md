@@ -46,9 +46,9 @@ This may take some time depending on your environment. A fresh conda installatio
 
 Once it is finished, proceed to the next step. You do not need to activate the environment.
 
-### 1. Make reference genome indeces
+### 1. Make reference genome indices
 
-Use `makeref.py` to create indeces for your reference genome of interest. You will need two things:
+Use `makeref.py` to create indices for your reference genome of interest. You will need two things:
 
 * fasta file of reference genome
 * reference genome GTF annotations
@@ -56,23 +56,23 @@ Use `makeref.py` to create indeces for your reference genome of interest. You wi
 You can get both of these from [GENCODE](https://www.gencodegenes.org/human/) for humans.
 
 ```
-python makeref.py --fasta refgenome.fa 
-                   --gtf annots.gtf 
-                   --outDir myref_indeces 
+python makeref.py --fasta refgenome.fa
+                   --gtf annots.gtf
+                   --outDir myref_indices
                    --cluster yes
 ```
 
 This will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
-This command will create a folder called `myref_indeces`. You will need this folder in the next step.
+This command will create a folder called `myref_indices`. You will need this folder in the next step.
 
 ### 2. Run the pipeline
 
 Use `dropRunner.py` on your fastq files to generate count matrices.
 
 ```
-python dropRunner.py  --R1 path/to/sample_001_R1.fastq.gz 
-                      --R2 path/to/sample_001_R2.fastq.gz 
-                      --indeces myref_indeces
+python dropRunner.py  --R1 path/to/sample_001_R1.fastq.gz
+                      --R2 path/to/sample_001_R2.fastq.gz
+                      --indices myref_indices
                       --cluster yes
                       --sample my_example_project
 ```
