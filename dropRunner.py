@@ -17,8 +17,8 @@ def check_gzip(files):
 def make_config(args, install_dir, work_dir):
 
     config=f"""proj_dir: {work_dir}/
-genome_index: {args.indeces}/
-refFlat: {args.indeces}/refFlat_for_picard.refFlat
+genome_index: {args.indices}/
+refFlat: {args.indices}/refFlat_for_picard.refFlat
 scripts: {install_dir}/Scripts/
 cell_num: 10000
 barcode: "CCCCCCCCCCCCNNNNNNNN"
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--R1', type=str, help='Absolute path to gzipped read 1 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--R2', type=str, help='Absolute path to gzipped read 2 fastq file (comma-delimited list of files if multiple.) REQUIRED')
-    parser.add_argument('--indeces', type=str, help='Indeces folder made by makeref.py')
+    parser.add_argument('--indices', type=str, help='Indeces folder made by makeref.py')
     parser.add_argument('--protocol', type=str, help='Protocol for producing data. Currently only drop-seq is available. Default: drop')
     parser.add_argument('--cluster', type=str, help='Will this run on a cluster or not? Options: yes or no. Default: no')
     parser.add_argument('--sample', type=str, help='sample name. Optional.')
@@ -85,8 +85,8 @@ if __name__ == '__main__':
     if args.R1 == None or args.R2 == None:
       raise Exception('Please provide gzipped fastq files for read 1 and read 2.')
     
-    if args.indeces == None:
-        raise Exception('Please provide indeces made by the makeref.py function!')
+    if args.indices == None:
+        raise Exception('Please provide indices made by the makeref.py function!')
       
     if os.path.exists('.fastq'):
       os.system('rm -r .fastq')

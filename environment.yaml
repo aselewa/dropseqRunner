@@ -14,6 +14,7 @@ dependencies:
     - ucsc-gtftogenepred
     - cutadapt
     - picard
+    - python >=3.6
     - r-base
     - r-rmarkdown
     - r-ggplot2

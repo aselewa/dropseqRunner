@@ -41,6 +41,8 @@ if not os.path.isdir(dir_log):
 samples = set(glob_wildcards(fastq + "{samples}_R1_001.fastq.gz").samples)
 read_num = ['1','2']
 
+localrules: index_bam
+
 rule all:
     input:
         expand(fastqc_dir + "{sample}_R{readn}_001_fastqc.html", sample=samples, readn=read_num),
