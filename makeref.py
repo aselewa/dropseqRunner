@@ -8,15 +8,12 @@ if __name__ == '__main__':
     parser.add_argument('--fasta', type=str, help='Genome fasta file in gzip format.')
     parser.add_argument('--gtf', type=str, help='Genome annotations in GTF format.')
     parser.add_argument('--outDir', type=str, help='Output directory of of genome index')
-    parser.add_argument('--cluster', type=str, help='Will this run on SLURM cluster? Options: yes or no. Default: no.')
+    parser.add_argument('--cluster', action='store_true', help='Add this flag if the job should run on the cluster.')
     args = parser.parse_args()
     
     if args.fasta == None or args.gtf == None:
       msg='Please provide a valid fasta file, and a genome annotation file in GTF format.'
       raise Exception(msg)
-      
-    if args.cluster == None:
-      args.cluster = 'no'
     
     if os.path.exists(args.outDir):
       os.system(f'rm -r {args.outDir}')
@@ -31,7 +28,7 @@ if __name__ == '__main__':
         msg = 'FAILED to create auxililary files. Check above for error messages. Make sure miniconda3/bin/ is in your path, and make sure that you supplied a valid GTF file.'
         raise Exception(msg)
 
-    if args.cluster == 'yes':
+    if args.cluster:
       
         cmd =f"""#!/bin/bash
 

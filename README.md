@@ -59,10 +59,10 @@ You can get both of these from [GENCODE](https://www.gencodegenes.org/human/) fo
 python makeref.py --fasta refgenome.fa
                    --gtf annots.gtf
                    --outDir myref_indices
-                   --cluster yes
+                   --cluster
 ```
 
-This will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
+This will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, do not include the cluster flag. 
 This command will create a folder called `myref_indices`. You will need this folder in the next step.
 
 ### 2. Run the pipeline
@@ -73,12 +73,12 @@ Use `dropRunner.py` on your fastq files to generate count matrices.
 python dropRunner.py  --R1 path/to/sample_001_R1.fastq.gz
                       --R2 path/to/sample_001_R2.fastq.gz
                       --indices myref_indices
-                      --cluster yes
+                      --cluster
                       --sample my_example_project
 ```
 
 
-Once again, this will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, pass no to the cluster flag: `--cluster no`
+Once again, this will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, do not give the `--cluster` flag.
 
 **NOTE 1**: Paths to fastq files must be absolute paths. You may give multiple, comma-delimited fastq files for parallel processing. 
 

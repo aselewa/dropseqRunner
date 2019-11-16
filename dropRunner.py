@@ -1,4 +1,3 @@
-
 import os
 import argparse
 
@@ -70,11 +69,18 @@ if __name__ == '__main__':
     parser.add_argument('--R1', type=str, help='Absolute path to gzipped read 1 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--R2', type=str, help='Absolute path to gzipped read 2 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--indices', type=str, help='Indeces folder made by makeref.py')
+    parser.add_argument('--rurun', action='store_true', help='This flag re-runs a previously failed attempt.')
     parser.add_argument('--protocol', type=str, help='Protocol for producing data. Currently only drop-seq is available. Default: drop')
-    parser.add_argument('--cluster', type=str, help='Will this run on a cluster or not? Options: yes or no. Default: no')
+    parser.add_argument('--cluster', action='store_true', help='Provide this flag if this job should be run on the cluster.')
     parser.add_argument('--sample', type=str, help='sample name. Optional.')
     
     args = parser.parse_args()
+    if args.rerun:
+         if os.file.exists('submit_snakemake.sbatch'):
+             os.system('sbatch submit_snakemake.sbatch')   
+         else:
+             raise Exception('sbatch file not found. Are you sure you ran this pipeline before?')
+
     if args.protocol == None:
         args.protocol = 'drop'
     if args.cluster == None:
@@ -87,11 +93,6 @@ if __name__ == '__main__':
     
     if args.indices == None:
         raise Exception('Please provide indices made by the makeref.py function!')
-      
-    if os.path.exists('.fastq'):
-      os.system('rm -r .fastq')
-    if os.path.exists('.snakemake'):
-      os.system('rm -r .snakemake')
       
     os.system('mkdir .fastq')    
 
@@ -117,7 +118,7 @@ if __name__ == '__main__':
 
     make_config(args, install_dir, work_dir)
     
-    if args.cluster == 'yes':
+    if args.cluster:
         make_submit_snakemake(install_dir, work_dir)
         print('Submitting snakemake job..')
         os.system('sbatch submit_snakemake.sbatch')
@@ -126,3 +127,6 @@ if __name__ == '__main__':
     else:
         print('Running snakemake directly on this node. This may not finish because alignment requires >30GB of RAM.')
         os.system(f'source activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
+
+
+
