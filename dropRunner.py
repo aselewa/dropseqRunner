@@ -75,7 +75,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     if args.rerun:
-         assert os.file.exists('submit_snakemake.sbatch'), \
+         assert os.path.isfile('submit_snakemake.sbatch'), \
             'sbatch file not found. Are you sure you ran this pipeline before?'
          os.system('sbatch submit_snakemake.sbatch')   
     
