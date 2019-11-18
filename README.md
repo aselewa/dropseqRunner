@@ -11,7 +11,7 @@ python dropRunner.py  --R1 abs/path/to/{}.R1.fastq.gz --R2 abs/path/to/{}.R2.fas
 
 ## Getting started
 
-To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python >= 3.6 is also required but that should have been installed with `conda`. Note that this pipeline has only been tested on 64bit Linux. Use on MacOS will likely result in errors, while Windows is completely unsupported.
+dropRunner is a Snakemake-based pipeline for processing single-cell RNA-seq data from the Drop-seq platform. We utilize STARsolo for alignment and constructing the digital expression matrix. We also supply a detailed report in HTML format that shows the sequencing statistics, as well as read distribution across the genome. The pipeline only works on Linux systems (excluding Windows linux subsystem). 
 
 ### Setting up conda
 
