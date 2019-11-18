@@ -1,10 +1,21 @@
+## TLDR
+
+```
+git clone git@github.com:aselewa/dropseqRunner.git
+cd dropseqRunner
+conda env create -f environment.yaml
+conda activate dropRunner
+python makeref.py --fasta path/to/fasta --gtf /path/to/gtf --outDir name_of_output_dir
+python dropRunner.py  --R1 abs/path/to/{}.R1.fastq.gz --R2 abs/path/to/{}.R2.fastq.gz --indices path/to/makeref/indices
+```
+
 ## Getting started
 
 To use this pipeline, you will need `Anaconda` or `miniconda` installed. Python >= 3.6 is also required but that should have been installed with `conda`. Note that this pipeline has only been tested on 64bit Linux. Use on MacOS will likely result in errors, while Windows is completely unsupported.
 
 ### Setting up conda
 
-You may **skip** this if you already have conda installed.
+You may **skip** this if you already have conda installed and configured.
  
 `miniconda3` is a light version of `Anaconda`. To install on 64Linux, do the following:
 
@@ -12,27 +23,20 @@ You may **skip** this if you already have conda installed.
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-
-Make sure that `miniconda3/bin/` is in your `PATH`! It is usually added to your `.bashrc` by the conda installer automatically. To apply the changes, type:
+Once it is done, initialize conda so it is in your path:
 
 ```
+conda init bash
 source ~/.bashrc
 ```
 
-Check your path:
+Check conda works:
 
 ```
-echo $PATH
+conda --version
 ```
 
-If you don't see something with `../miniconda3/bin/`, then you need to add these manually by typing:
-
-```
-echo 'export PATH=PATH/TO/miniconda3/bin/:$PATH' >> ~/.bashrc'
-source ~/.bashrc
-```
-
-### 0. Set up environment
+### 0. Set up and activate environment
 
 Use the provided `environment.yaml` file to set up the conda environment.
 
@@ -41,10 +45,13 @@ git clone git@github.com:aselewa/dropseqRunner.git
 cd dropseqRunner
 conda env create -f environment.yaml
 ```
-
 This may take some time depending on your environment. A fresh conda installation should take about 10-15 minutes. 
 
-Once it is finished, proceed to the next step. You do not need to activate the environment.
+**Activate the environment before running the next steps**
+
+```
+conda activate dropRunner
+```
 
 ### 1. Make reference genome indices
 
@@ -57,9 +64,9 @@ You can get both of these from [GENCODE](https://www.gencodegenes.org/human/) fo
 
 ```
 python makeref.py --fasta refgenome.fa
-                   --gtf annots.gtf
-                   --outDir myref_indices
-                   --cluster
+                  --gtf annots.gtf
+                  --outDir myref_indices
+                  --cluster
 ```
 
 This will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, do not include the cluster flag. 
@@ -82,7 +89,7 @@ Once again, this will run on the RCC midway2 using the `broadwl` partition. If y
 
 **NOTE 1**: Paths to fastq files must be absolute paths. You may give multiple, comma-delimited fastq files for parallel processing. 
 
-**NOTE 2**: Make sure your fastq files match the following pattern: **{project_name}_001_R1.fastq.gz** where {project_name} is a unique identifider.
+**NOTE 2**: Make sure your fastq files match the following pattern: **{project_name}.R1.fastq.gz** where {project_name} is a unique identifider.
 
 ### 3. Output
 
