@@ -82,6 +82,10 @@ if __name__ == '__main__':
     assert shutil.which('snakemake') is not None, \ 
   "Could not find snakemake. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software" 
     
+    assert args.R1 is not None, "Please provide gzipped fastq files for read 1"
+    assert args.R2 is not None, "Please provide gzipped fastq files for read 2."
+    assert args.indices is not None, 'Please provide indices made by the makeref.py function!'
+    
     if args.protocol == None:
         args.protocol = 'drop'
     if args.cluster == None:
@@ -89,10 +93,6 @@ if __name__ == '__main__':
     if args.sample == None:
         args.sample = 'NAME_NOT_PROVIDED'
         
-    assert args.R1 is not None, "Please provide gzipped fastq files for read 1"
-    assert args.R2 is not None, "Please provide gzipped fastq files for read 2."
-    assert args.indices is not None, 'Please provide indices made by the makeref.py function!'
-    
     os.system('mkdir .fastq')    
 
     r1, r2 = args.R1.split(','), args.R2.split(',')
