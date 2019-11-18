@@ -16,8 +16,11 @@ if __name__ == '__main__':
     assert os.file.exists(args.gtf), 'Please provide a valid gtf file.' 
     assert not os.dir.exists(args.outDir), \
     'Cannot create output directory because it already exists. Please provide the location and name of a non-existing directory.')
+    
     assert shutil.which('gtfToGenePred') is not None, \
     'gtfToGenePred not found. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software.' 
+    assert shutil.which('STAR') is not None, \
+    'STAR not found. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software.' 
     
     print('Setting up directory and creating auxililary files..')
     
@@ -42,7 +45,6 @@ if __name__ == '__main__':
 #SBATCH --mem=50G
 #SBATCH --tasks-per-node=4
 
-source activate dropRunner
 STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59
 """
 
