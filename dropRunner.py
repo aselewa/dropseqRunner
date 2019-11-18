@@ -15,7 +15,10 @@ def check_gzip(files):
     return True
 
 def make_config(args, install_dir, work_dir):
-
+     
+    if args.indices[-1] == '/':
+        args.indices = args.indices[:-1]
+   
     config=f"""proj_dir: {work_dir}/
 genome_index: {args.indices}/
 refFlat: {args.indices}/refFlat_for_picard.refFlat
@@ -67,24 +70,28 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--R1', type=str, help='Absolute path to gzipped read 1 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--R2', type=str, help='Absolute path to gzipped read 2 fastq file (comma-delimited list of files if multiple.) REQUIRED')
-    parser.add_argument('--indices', type=str, help='Indeces folder made by makeref.py')
-    parser.add_argument('--rurun', action='store_true', help='This flag re-runs a previously failed attempt.')
+    parser.add_argument('--indices', type=str, help='Name of indeces directory made by makeref.py')
+    parser.add_argument('--rerun', action='store_true', help='This flag re-runs a previously failed attempt.')
     parser.add_argument('--protocol', type=str, help='Protocol for producing data. Currently only drop-seq is available. Default: drop')
     parser.add_argument('--cluster', action='store_true', help='Provide this flag if this job should be run on the cluster.')
     parser.add_argument('--sample', type=str, help='sample name. Optional.')
     
     args = parser.parse_args()
+    
     if args.rerun:
          assert os.path.isfile('submit_snakemake.sbatch'), \
             'sbatch file not found. Are you sure you ran this pipeline before?'
          os.system('sbatch submit_snakemake.sbatch')   
     
-    assert shutil.which('snakemake') is not None, \ 
-  "Could not find snakemake. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software" 
+    if args.R1 == None or args.R2 == None or args.indices == None:
+         raise Exception('Required arguments not provided. Please provide R1, R2, and indices folder name.')
     
-    assert args.R1 is not None, "Please provide gzipped fastq files for read 1"
-    assert args.R2 is not None, "Please provide gzipped fastq files for read 2."
-    assert args.indices is not None, 'Please provide indices made by the makeref.py function!'
+    assert shutil.which('snakemake') is not None, \
+'Could not find snakemake. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software'
+    
+    assert os.path.isfile(args.R1), "Please provide a gzipped fastq file for read 1"
+    assert os.path.isfile(args.R2), "Please provide a gzipped fastq files for read 2."
+    assert os.path.isdir(args.indices), 'Please provide indices made by the makeref.py function!'
     
     if args.protocol == None:
         args.protocol = 'drop'
@@ -99,7 +106,7 @@ if __name__ == '__main__':
     assert os.path.isabs(r1[0]), 'Please give absolute path to the fastq files. No relative paths!'
     assert os.path.isabs(r2[0]), 'Please give absolute path to the fastq files. No relative paths!'
       
-    assert len(r1) != len(r2), \
+    assert len(r1) == len(r2), \
     'Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
 
     if check_gzip(r1) and check_gzip(r2):

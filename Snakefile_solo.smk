@@ -51,7 +51,7 @@ rule all:
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam", sample = samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam.bai", sample = samples),
         expand(qc_data + "{sample}_RNAmetrics.picard.txt", sample = samples),
-        expand(reports + "{sample}_pipeline_report.html", sample = samples)
+        expand(reports + "{sample}/{sample}_pipeline_report.html", sample = samples)
 
 #fastqc will be run on both input files
 rule fastqc:
@@ -107,7 +107,7 @@ rule align:
             --soloCBstart {params.CBstart} --soloCBlen {params.CBlen} --soloUMIstart {params.UMIstart} --soloUMIlen {params.UMIlen} \
             --soloStrand {params.strand} --soloFeatures Gene GeneFull SJ Velocyto --soloUMIdedup 1MM_Directional \
             --soloOutFileNames Solo.out/ "genes.tsv" "barcodes.tsv" "matrix.mtx" "matrixGeneFull.mtx" \
-            --readFilesIn {input.cDNA_read} {input.bc_read} --readFilesCommand zcat --outFilterMultimapNmax {params.multimap} --outFileNamePrefix output/{wildcards.sample}_ > {output.bam}
+            --readFilesIn {input.cDNA_read} {input.bc_read} --readFilesCommand zcat --outFilterMultimapNmax {params.multimap} --outFileNamePrefix output/{wildcards.sample}_ --limitBAMsortRAM 48000000000 > {output.bam}
         """
 
 rule index_bam:
@@ -134,9 +134,7 @@ rule make_report:
      input:
          qc_data + "{sample}_RNAmetrics.picard.txt",
      output:
-         reports + "{sample}_pipeline_report.html"
-     resources:
-         load=1
+         reports + "{sample}/{sample}_pipeline_report.html"
      shell:
-         """ R -e "rmarkdown::render(input = '{scripts}dropRunner.Rmd', knit_root_dir='{pd}', output_file='{output}', params=list(sampleID='{wildcards.sample}'))" """
+         """ R -e "rmarkdown::render(input = '{scripts}dropRunner.Rmd', knit_root_dir='{pd}', output_file='{output}', intermediates_dir='{reports}/{wildcards.sample}/', params=list(sampleID='{wildcards.sample}'))" """
 
