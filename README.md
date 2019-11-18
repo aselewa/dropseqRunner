@@ -77,8 +77,8 @@ This command will create a folder called `myref_indices`. You will need this fol
 Use `dropRunner.py` on your fastq files to generate count matrices.
 
 ```
-python dropRunner.py  --R1 path/to/sample.R1.fastq.gz
-                      --R2 path/to/sample.R2.fastq.gz
+python dropRunner.py  --R1 path/to/{}.R1.fastq.gz
+                      --R2 path/to/{}.R2.fastq.gz
                       --indices myref_indices
                       --cluster
                       --sample my_example_project
@@ -90,7 +90,7 @@ Once again, this will run on the RCC midway2 using the `broadwl` partition. If y
 **NOTE 1**: Paths to fastq files must be absolute paths. This may seem like a strange requirement, but the idea is to perform the processing in a temporary workspace, where only the output (reports and count matrices) is kept and the rest is discarded. 
 To avoid copying your (large) fastq files to the temporary workspace, I create symlinks to your fastq files, which are safe if we know the absolute path of the fastq files.
 
-**Note 2**: You can supply multiple R1s and R2s by passing a comma-delimited list. I find this bash command useful:
+**Note 3**: You can supply multiple R1s and R2s by passing a comma-delimited list. I find this bash command useful:
 
 ```
 R1=$(ls *.R1.fastq.gz | paste -sd,)
