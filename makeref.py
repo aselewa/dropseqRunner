@@ -15,7 +15,7 @@ if __name__ == '__main__':
     assert os.file.exists(args.fasta), 'Please provide a valid fasta file.' 
     assert os.file.exists(args.gtf), 'Please provide a valid gtf file.' 
     assert not os.dir.exists(args.outDir), \
-    'Cannot create output directory because it already exists. Please provide the location and name of a non-existing directory.')
+    'Cannot create output directory because it already exists. Please provide the location and name of a non-existing directory.'
     
     assert shutil.which('gtfToGenePred') is not None, \
     'gtfToGenePred not found. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software.' 
