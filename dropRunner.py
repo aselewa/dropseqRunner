@@ -1,4 +1,5 @@
 import os
+import shutil
 import argparse
 
 install_dir = os.path.dirname(os.path.realpath(__file__))
@@ -41,8 +42,6 @@ def make_submit_snakemake(install_dir, work_dir):
 #SBATCH --mem=4G
 #SBATCH --tasks-per-node=4
 
-source activate dropRunner
-
 snakemake \\
     -kp \\
     --ri \\
@@ -76,11 +75,13 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     if args.rerun:
-         if os.file.exists('submit_snakemake.sbatch'):
-             os.system('sbatch submit_snakemake.sbatch')   
-         else:
-             raise Exception('sbatch file not found. Are you sure you ran this pipeline before?')
-
+         assert os.file.exists('submit_snakemake.sbatch') is not None, \
+            'sbatch file not found. Are you sure you ran this pipeline before?'
+         os.system('sbatch submit_snakemake.sbatch')   
+    
+    assert shutil.which('snakemake') is not None, \ 
+  "Could not find snakemake. Use the conda environment in environment.yaml to quickly install all the required software" 
+    
     if args.protocol == None:
         args.protocol = 'drop'
     if args.cluster == None:
@@ -88,25 +89,20 @@ if __name__ == '__main__':
     if args.sample == None:
         args.sample = 'NAME_NOT_PROVIDED'
         
-    if args.R1 == None or args.R2 == None:
-      raise Exception('Please provide gzipped fastq files for read 1 and read 2.')
+    assert args.R1 is not None, "Please provide gzipped fastq files for read 1"
+    assert args.R2 is not None, "Please provide gzipped fastq files for read 2."
+    assert args.indices is not None, 'Please provide indices made by the makeref.py function!'
     
-    if args.indices == None:
-        raise Exception('Please provide indices made by the makeref.py function!')
-      
     os.system('mkdir .fastq')    
 
     r1, r2 = args.R1.split(','), args.R2.split(',')
-    if not os.path.isabs(r1[0]) or not os.path.isabs(r2[0]):
-      msg = 'Please give absolute path to the fastq files. No relative paths!'
-      raise Exception(msg)
+    assert os.path.isabs(r1[0]), 'Please give absolute path to the fastq files. No relative paths!'
+    assert os.path.isabs(r2[0]), 'Please give absolute path to the fastq files. No relative paths!'
       
-    if len(r1) != len(r2):
-        msg='Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
-        raise Exception(msg)
+    assert len(r1) != len(r2), \
+    'Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
 
     if check_gzip(r1) and check_gzip(r2):
-        
         for R1,R2 in zip(r1, r2):
             f1_name = R1.split('/')[-1]
             f2_name = R2.split('/')[-1]
@@ -126,7 +122,7 @@ if __name__ == '__main__':
         
     else:
         print('Running snakemake directly on this node. This may not finish because alignment requires >30GB of RAM.')
-        os.system(f'source activate dropRunner; snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
+        os.system(f'snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
 
 
 
