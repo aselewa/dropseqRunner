@@ -77,8 +77,8 @@ This command will create a folder called `myref_indices`. You will need this fol
 Use `dropRunner.py` on your fastq files to generate count matrices.
 
 ```
-python dropRunner.py  --R1 path/to/sample_001_R1.fastq.gz
-                      --R2 path/to/sample_001_R2.fastq.gz
+python dropRunner.py  --R1 path/to/sample.R1.fastq.gz
+                      --R2 path/to/sample.R2.fastq.gz
                       --indices myref_indices
                       --cluster
                       --sample my_example_project
