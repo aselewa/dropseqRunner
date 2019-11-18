@@ -12,9 +12,9 @@ if __name__ == '__main__':
     parser.add_argument('--cluster', action='store_true', help='Add this flag if the job should run on the cluster.')
     args = parser.parse_args()
     
-    assert os.file.exists(args.fasta), 'Please provide a valid fasta file.' 
-    assert os.file.exists(args.gtf), 'Please provide a valid gtf file.' 
-    assert not os.dir.exists(args.outDir), \
+    assert os.path.isfile(args.fasta), 'Please provide a valid fasta file.' 
+    assert os.path.isfile(args.gtf), 'Please provide a valid gtf file.' 
+    assert not os.path.isdir(args.outDir), \
     'Cannot create output directory because it already exists. Please provide the location and name of a non-existing directory.'
     
     assert shutil.which('gtfToGenePred') is not None, \
