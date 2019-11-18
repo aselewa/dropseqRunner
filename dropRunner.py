@@ -75,12 +75,12 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     if args.rerun:
-         assert os.file.exists('submit_snakemake.sbatch') is not None, \
+         assert os.file.exists('submit_snakemake.sbatch'), \
             'sbatch file not found. Are you sure you ran this pipeline before?'
          os.system('sbatch submit_snakemake.sbatch')   
     
     assert shutil.which('snakemake') is not None, \ 
-  "Could not find snakemake. Use the conda environment in environment.yaml to quickly install all the required software" 
+  "Could not find snakemake. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software" 
     
     if args.protocol == None:
         args.protocol = 'drop'
