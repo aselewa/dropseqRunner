@@ -5,13 +5,18 @@ git clone git@github.com:aselewa/dropseqRunner.git
 cd dropseqRunner
 conda env create -f environment.yaml
 conda activate dropRunner
-python makeref.py --fasta path/to/fasta --gtf /path/to/gtf --outDir name_of_output_dir
-python dropRunner.py  --R1 abs/path/to/{}.R1.fastq.gz --R2 abs/path/to/{}.R2.fastq.gz --indices path/to/makeref/indices
+python makeref.py --fasta path/to/fasta \
+                  --gtf /path/to/gtf \
+                  --outDir name_of_output_dir
+python dropRunner.py  --R1 path/to/{}.R1.fastq.gz \
+                      --R2 path/to/{}.R2.fastq.gz \
+                      --indices path/to/makeref/indices \
+                      --protocol drop
 ```
 
 ## Getting started
 
-dropRunner is a Snakemake-based pipeline for processing single-cell RNA-seq data from the Drop-seq platform. We utilize STARsolo for alignment and constructing the digital expression matrix. We also supply a detailed report in HTML format that shows the sequencing statistics, as well as read distribution across the genome. The pipeline only works on Linux systems (excluding Windows linux subsystem). 
+dropRunner is a Snakemake-based pipeline for processing single-cell RNA-seq data from the Drop-seq and 10x platform. We utilize STARsolo for alignment and constructing the digital expression matrix. We also supply a detailed report in HTML format that shows the sequencing statistics, as well as read distribution across the genome. The pipeline only works on Linux systems (excluding Windows linux subsystem). 
 
 ### Setting up conda
 
@@ -74,7 +79,7 @@ This command will create a folder called `myref_indices`. You will need this fol
 
 ### 2. Run the pipeline
 
-Use `dropRunner.py` on your fastq files to generate count matrices.
+Use `dropRunner.py` on your fastq files to generate count matrices. Use the `protocol` parameter to specify drop, 10x-v2, or 10x-v3. The last two are version 2 and version 3 10x platforms.
 
 ```
 python dropRunner.py  --R1 path/to/{}.R1.fastq.gz
@@ -84,13 +89,7 @@ python dropRunner.py  --R1 path/to/{}.R1.fastq.gz
                       --sample my_example_project
 ```
 
-
-Once again, this will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, do not give the `--cluster` flag.
-
-**NOTE 1**: Paths to fastq files must be absolute paths. This may seem like a strange requirement, but the idea is to perform the processing in a temporary workspace, where only the output (reports and count matrices) is kept and the rest is discarded. 
-To avoid copying your (large) fastq files to the temporary workspace, I create symlinks to your fastq files, which are safe if we know the absolute path of the fastq files.
-
-**Note 3**: You can supply multiple R1s and R2s by passing a comma-delimited list. I find this bash command useful:
+**Note 1**: You can supply multiple R1s and R2s by passing a comma-delimited list. I find this bash command useful:
 
 ```
 R1=$(ls *.R1.fastq.gz | paste -sd,)

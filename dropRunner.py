@@ -4,6 +4,7 @@ import argparse
 
 install_dir = os.path.dirname(os.path.realpath(__file__))
 work_dir = os.getcwd()
+protocol_map = {'drop': 'Snakefile_drop.smk', '10x-v2': 'Snakefile_10x.smk', '10x-v3': 'Snakefile_10x.smk'}
 
 def check_gzip(files):
     '''
@@ -18,7 +19,13 @@ def make_config(args, install_dir, work_dir):
      
     if args.indices[-1] == '/':
         args.indices = args.indices[:-1]
-   
+    if args.protocol == '10x-v2':
+        barcodes = f'{install_dir}/barcodes/whitelist.v2.txt.gz'
+    elif args.protocol == '10x-v3':
+        barcodes = f'{install_dir}/barcodes/whitelist.v3.txt.gz'
+    else:
+        barcodes = None
+
     config=f"""proj_dir: {work_dir}/
 genome_index: {args.indices}/
 refFlat: {args.indices}/refFlat_for_picard.refFlat
@@ -28,14 +35,17 @@ barcode: "CCCCCCCCCCCCNNNNNNNN"
 dir_log: log/
 Sample: {args.sample}
 Protocol: {args.protocol}
+10x_barcodes: {barcodes}
     """
     with open('config.yaml', 'w') as f:
          f.write(config)
 
-def make_submit_snakemake(install_dir, work_dir):
+def make_submit_snakemake(args, install_dir, work_dir):
     '''
     Creates the SLURM that submits Snakefile on the cluster
     '''
+    smk = protocol_map[args.protocol]
+
     cmd =f"""#!/bin/bash
 
 #SBATCH --job-name=snakemake
@@ -58,7 +68,7 @@ snakemake \\
         --partition=broadwl \\
         --job-name={{cluster.name}} \\
     --output={{cluster.logfile}}" \\
-    -s {install_dir}/Snakefile_solo.smk \\
+    -s {install_dir}/{smk} \\
     --configfile {work_dir}/config.yaml
 """
 
@@ -68,11 +78,14 @@ snakemake \\
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
+    
+    # Required
     parser.add_argument('--R1', type=str, help='Absolute path to gzipped read 1 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--R2', type=str, help='Absolute path to gzipped read 2 fastq file (comma-delimited list of files if multiple.) REQUIRED')
     parser.add_argument('--indices', type=str, help='Name of indeces directory made by makeref.py')
+    parser.add_argument('--protocol', type=str, help='Single cell protocol used to produce data. Options: drop, 10x-v2, 10x-v3')
+    # Optional/conditional
     parser.add_argument('--rerun', action='store_true', help='This flag re-runs a previously failed attempt.')
-    parser.add_argument('--protocol', type=str, help='Protocol for producing data. Currently only drop-seq is available. Default: drop')
     parser.add_argument('--cluster', action='store_true', help='Provide this flag if this job should be run on the cluster.')
     parser.add_argument('--sample', type=str, help='sample name. Optional.')
     
@@ -83,8 +96,8 @@ if __name__ == '__main__':
             'sbatch file not found. Are you sure you ran this pipeline before?'
          os.system('sbatch submit_snakemake.sbatch')   
     
-    if args.R1 == None or args.R2 == None or args.indices == None:
-         raise Exception('Required arguments not provided. Please provide R1, R2, and indices folder name.')
+    if args.R1 == None or args.R2 == None or args.indices == None or args.protocol == None:
+         raise Exception('Required arguments not provided. Please provide R1, R2, an indices folder name, and a protocol')
     
     assert shutil.which('snakemake') is not None, \
 'Could not find snakemake. Did you forget to activate the conda environment? Use the conda environment in environment.yaml to quickly install all the required software'
@@ -92,20 +105,14 @@ if __name__ == '__main__':
     assert os.path.isfile(args.R1), "Please provide a gzipped fastq file for read 1"
     assert os.path.isfile(args.R2), "Please provide a gzipped fastq files for read 2."
     assert os.path.isdir(args.indices), 'Please provide indices made by the makeref.py function!'
+    assert args.protocol in ['drop', '10x-v2', '10x-v3'], 'Please provide a valid protocol! Options are drop, 10x-v2, or 10x-v3'
     
-    if args.protocol == None:
-        args.protocol = 'drop'
     if args.cluster == None:
         args.cluster = 'no'
     if args.sample == None:
-        args.sample = 'NAME_NOT_PROVIDED'
-        
-    os.system('mkdir .fastq')    
+        args.sample = f'{args.protocol}-experiment'
 
-    r1, r2 = args.R1.split(','), args.R2.split(',')
-    assert os.path.isabs(r1[0]), 'Please give absolute path to the fastq files. No relative paths!'
-    assert os.path.isabs(r2[0]), 'Please give absolute path to the fastq files. No relative paths!'
-      
+    r1, r2 = args.R1.split(','), args.R2.split(',') 
     assert len(r1) == len(r2), \
     'Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
 
@@ -113,8 +120,10 @@ if __name__ == '__main__':
         for R1,R2 in zip(r1, r2):
             f1_name = R1.split('/')[-1]
             f2_name = R2.split('/')[-1]
-            os.system(f'ln -s {R1} .fastq/{f1_name}')
-            os.system(f'ln -s {R2} .fastq/{f2_name}')
+            assert 'R1' in f1_name, 'R1 filename does not contain "R1". Did you give R2 twice?'
+            assert 'R2' in f2_name, 'R2 filename does not contain "R2". Did you give R1 twice?'
+            os.system(f'ln -s {R1} _{f1_name}')
+            os.system(f'ln -s {R2} _{f2_name}')
     else:
         msg = 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
         raise TypeError(msg)
@@ -122,14 +131,15 @@ if __name__ == '__main__':
     make_config(args, install_dir, work_dir)
     
     if args.cluster:
-        make_submit_snakemake(install_dir, work_dir)
+        make_submit_snakemake(args, install_dir, work_dir)
         print('Submitting snakemake job..')
         os.system('sbatch submit_snakemake.sbatch')
         print('Snakemake job has been submitted to the cluster.\nType "qstat -u CNETID" to see the progress of the snakefile.')
         
-    else:
+    else: 
+        smk = protocol_map[args.protocol]
         print('Running snakemake directly on this node. This may not finish because alignment requires >30GB of RAM.')
-        os.system(f'snakemake -kp --ri -s {install_dir}/Snakefile_solo.smk --configfile {work_dir}/config.yaml')
+        os.system(f'snakemake -kp --ri -s {install_dir}/{smk} --configfile {work_dir}/config.yaml')
 
 
 
