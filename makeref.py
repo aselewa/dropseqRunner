@@ -52,7 +52,7 @@ if __name__ == '__main__':
 #SBATCH --mem=50G
 #SBATCH --tasks-per-node=4
 
-STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59 --genomeSAindexNbases {args.genomeNbases}
+STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 99 --genomeSAindexNbases {args.genomeNbases}
 """
 
         with open('generate_indices.sbatch', 'w') as f:
@@ -64,4 +64,4 @@ STAR --runThreadN 4 --runMode genomeGenerate --genomeDir {args.outDir}/ --genome
     else:
       
       print('Genome index generation will run locally on this machine. This may not complete due to STARs large memory requirement.')
-      os.system(f'STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 59 --genomeSAindexNbases {args.genomeNbases}')
+      os.system(f'STAR --runThreadN 1 --runMode genomeGenerate --genomeDir {args.outDir}/ --genomeFastaFiles {args.fasta} --sjdbGTFfile {args.gtf} --sjdbOverhang 99 --genomeSAindexNbases {args.genomeNbases}')
