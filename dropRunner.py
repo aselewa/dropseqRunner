@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import shutil
 import argparse
@@ -108,7 +110,7 @@ if __name__ == '__main__':
     assert args.protocol in ['drop', '10x-v2', '10x-v3'], 'Please provide a valid protocol! Options are drop, 10x-v2, or 10x-v3'
     
     if args.cluster == None:
-        args.cluster = 'no'
+        args.cluster = False
     if args.sample == None:
         args.sample = f'{args.protocol}-experiment'
 

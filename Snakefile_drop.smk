@@ -44,6 +44,7 @@ rule all:
         expand(cell_stats + "{sample}_whitelist_for_solo.txt", sample=samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam", sample = samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam.bai", sample = samples),
+        expand(output + "name_sorted/{sampled}_Aligned.sortedByName.out.bam"),
         expand(qc_data + "{sample}_RNAmetrics.picard.txt", sample = samples),
         expand(reports + "{sample}/{sample}_pipeline_report.html", sample = samples)
 
@@ -85,7 +86,8 @@ rule align:
         ref_genome = GenomeIndex,
         whitelist = cell_stats + "{sample}_whitelist_for_solo.txt"
     output:
-        bam = output + "{sample}_Aligned.sortedByCoord.out.bam"
+        bam = output + "{sample}_Aligned.sortedByCoord.out.bam",
+        unsorted = output + "{sample}_Aligned.out.bam"
     params:
         CBstart = 1,
         CBlen = 12,
@@ -96,7 +98,7 @@ rule align:
         strand = "Forward"
     shell:
         """
-        STAR --runThreadN {params.threads} --genomeDir {input.ref_genome} --outSAMtype BAM SortedByCoordinate \
+        STAR --runThreadN {params.threads} --genomeDir {input.ref_genome} --outSAMtype BAM Unsorted SortedByCoordinate \
              --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM --outStd BAM_SortedByCoordinate --soloType Droplet --soloCBwhitelist {input.whitelist} \
             --soloCBstart {params.CBstart} --soloCBlen {params.CBlen} --soloUMIstart {params.UMIstart} --soloUMIlen {params.UMIlen} \
             --soloStrand {params.strand} --soloFeatures Gene --soloUMIdedup 1MM_Directional \
@@ -111,6 +113,14 @@ rule index_bam:
         output + "{sample}_Aligned.sortedByCoord.out.bam.bai"
     shell:
         "samtools index {input}"
+        
+rule sort_bam_name:
+    input:
+        output + "{sample}_Aligned.out.bam"
+    output:
+        output + "name_sorted/{sampled}_Aligned.sortedByName.out.bam"
+    shell:
+        "samtools sort -n -o {output} -O bam {input}
 
 rule collect_rna_metrics:
     input:
