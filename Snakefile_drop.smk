@@ -44,7 +44,7 @@ rule all:
         expand(cell_stats + "{sample}_whitelist_for_solo.txt", sample=samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam", sample = samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam.bai", sample = samples),
-        expand(output + "name_sorted/{sampled}_Aligned.sortedByName.out.bam"),
+        expand(output + "name_sorted/{sample}_Aligned.sortedByName.out.bam", sample = samples),
         expand(qc_data + "{sample}_RNAmetrics.picard.txt", sample = samples),
         expand(reports + "{sample}/{sample}_pipeline_report.html", sample = samples)
 
@@ -118,9 +118,9 @@ rule sort_bam_name:
     input:
         output + "{sample}_Aligned.out.bam"
     output:
-        output + "name_sorted/{sampled}_Aligned.sortedByName.out.bam"
+        output + "name_sorted/{sample}_Aligned.sortedByName.out.bam"
     shell:
-        "samtools sort -n -o {output} -O bam {input}
+        "samtools sort -n -o {output} -O bam {input}" 
 
 rule collect_rna_metrics:
     input:
