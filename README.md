@@ -16,7 +16,9 @@ python dropRunner.py  --R1 path/to/{}.R1.fastq.gz \
 
 ## Getting started
 
-dropRunner is a Snakemake-based pipeline for processing single-cell RNA-seq data from the Drop-seq and 10x platform. We utilize STARsolo for alignment and constructing the digital expression matrix. We also supply a detailed report in HTML format that shows the sequencing statistics, as well as read distribution across the genome. The pipeline only works on Linux systems (excluding Windows linux subsystem). 
+dropRunner is a Snakemake-based pipeline for processing single-cell RNA-seq data from the Drop-seq and 10x platform. We utilize STARsolo for alignment and constructing the digital expression matrix. We also supply a detailed report in HTML format that shows the sequencing statistics, as well as read distribution across the genome. The pipeline only works on Linux systems (excluding Windows linux subsystem).
+
+**This pipeline is still under active development. If you have issues, please report them via GitHub.** 
 
 ### Setting up conda
 
