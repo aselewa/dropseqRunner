@@ -122,10 +122,18 @@ if __name__ == '__main__':
         for R1,R2 in zip(r1, r2):
             f1_name = R1.split('/')[-1]
             f2_name = R2.split('/')[-1]
+            
             assert 'R1' in f1_name, 'R1 filename does not contain "R1". Did you give R2 twice?'
             assert 'R2' in f2_name, 'R2 filename does not contain "R2". Did you give R1 twice?'
-            os.system(f'ln -s {R1} _{f1_name}')
-            os.system(f'ln -s {R2} _{f2_name}')
+
+            if os.path.isabs(R1):
+              os.system(f'ln -s {R1} fastq/{f1_name}')
+            else:
+              os.system(f'ln -s ../{R1} fastq/{f1_name}')
+            if os.path.isabs(R2):
+              os.system(f'ln -s {R2} fastq/{f2_name}')
+            else:
+              os.system(f'ln -s ../{R2} fastq/{f2_name}')
     else:
         msg = 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
         raise TypeError(msg)
