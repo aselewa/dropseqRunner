@@ -117,6 +117,8 @@ if __name__ == '__main__':
     r1, r2 = args.R1.split(','), args.R2.split(',') 
     assert len(r1) == len(r2), \
     'Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
+    
+    os.system('mkdir fastq')
 
     if check_gzip(r1) and check_gzip(r2):
         for R1,R2 in zip(r1, r2):

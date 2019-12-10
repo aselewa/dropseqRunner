@@ -18,6 +18,7 @@ GenomeIndex = config["genome_index"]
 ref_flat=config["refFlat"]
 
 pd = config["proj_dir"]
+fastq = pd + "fastq/"
 output = pd + "output/"
 solo_out = output + "Solo.out/"
 fastqc_dir = output + "fastqc/"
@@ -31,7 +32,7 @@ dir_log = config["dir_log"]
 if not os.path.isdir(dir_log):
     os.mkdir(dir_log)
 
-samples = set(glob_wildcards(pd + "_{samples}.R1.fastq.gz").samples)
+samples = set(glob_wildcards(fastq + "{samples}.R1.fastq.gz").samples)
 print(samples)
 read_num = ['1','2']
 
@@ -39,7 +40,7 @@ localrules: index_bam, make_report
 
 rule all:
     input:
-        expand(fastqc_dir + "_{sample}.R{readn}_fastqc.html", sample=samples, readn=read_num),
+        expand(fastqc_dir + "{sample}.R{readn}_fastqc.html", sample=samples, readn=read_num),
         expand(cell_stats + "{sample}_whitelist.txt", sample=samples),
         expand(cell_stats + "{sample}_whitelist_for_solo.txt", sample=samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam", sample = samples),
@@ -50,10 +51,10 @@ rule all:
 #fastqc will be run on both input files
 rule fastqc:
     input:
-        pd + "_{sample}.R{read_num}.fastq.gz"
+        fastq + "{sample}.R{read_num}.fastq.gz"
     output:
-        fastqc_dir + "_{sample}.R{read_num}_fastqc.html",
-        fastqc_dir + "_{sample}.R{read_num}_fastqc.zip"
+        fastqc_dir + "{sample}.R{read_num}_fastqc.html",
+        fastqc_dir + "{sample}.R{read_num}_fastqc.zip"
     params:
         outdir = fastqc_dir
     shell:
@@ -61,7 +62,7 @@ rule fastqc:
 
 rule umi_create_whitelist:
     input:
-        pd + "_{sample}.R1.fastq.gz"
+        fastq + "{sample}.R1.fastq.gz"
     output:
         cell_stats + "{sample}_whitelist.txt"
     params:
@@ -80,8 +81,8 @@ rule whitelist_for_solo:
 
 rule align:
     input:
-        bc_read = pd + "_{sample}.R1.fastq.gz",
-        cDNA_read = pd + "_{sample}.R2.fastq.gz",
+        bc_read = fastq + "{sample}.R1.fastq.gz",
+        cDNA_read = fastq + "{sample}.R2.fastq.gz",
         ref_genome = GenomeIndex,
         whitelist = cell_stats + "{sample}_whitelist_for_solo.txt"
     output:
