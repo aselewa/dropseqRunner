@@ -69,8 +69,7 @@ rule align:
         ref_genome = GenomeIndex,
         whitelist = output + "barcodes_for_star.txt"
     output:
-        bam = output + "{sample}_Aligned.sortedByCoord.out.bam",
-        unsorted = output + "{sample}_Aligned.out.bam"
+        bam = output + "{sample}_Aligned.sortedByCoord.out.bam"
     params:
         CBstart = 1,
         CBlen = 16,
