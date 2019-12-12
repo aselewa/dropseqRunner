@@ -29,14 +29,14 @@ dir_log = config["dir_log"]
 if not os.path.isdir(dir_log):
     os.mkdir(dir_log)
 
-samples = set(glob_wildcards(fastq + "{samples}.R1.fastq.gz").samples)
+samples = set(glob_wildcards(fastq + "{samples}_R1.fastq.gz").samples)
 read_num = ['1','2']
 
 localrules: index_bam, make_report
 
 rule all:
     input:
-        expand(fastqc_dir + "{sample}.R{readn}_fastqc.html", sample=samples, readn=read_num),
+        expand(fastqc_dir + "{sample}_R{readn}_fastqc.html", sample=samples, readn=read_num),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam", sample = samples),
         expand(output + "{sample}_Aligned.sortedByCoord.out.bam.bai", sample = samples),
         expand(qc_data + "{sample}_RNAmetrics.picard.txt", sample = samples),
@@ -45,10 +45,10 @@ rule all:
 #fastqc will be run on both input files
 rule fastqc:
     input:
-        fastq + "{sample}.R{read_num}.fastq.gz"
+        fastq + "{sample}_R{read_num}.fastq.gz"
     output:
-        fastqc_dir + "{sample}.R{read_num}_fastqc.html",
-        fastqc_dir + "{sample}.R{read_num}_fastqc.zip"
+        fastqc_dir + "{sample}_R{read_num}_fastqc.html",
+        fastqc_dir + "{sample}_R{read_num}_fastqc.zip"
     params:
         outdir = fastqc_dir
     shell:
@@ -64,8 +64,8 @@ rule unzip_whitelist:
 
 rule align:
     input:
-        bc_read = fastq + "{sample}.R1.fastq.gz",
-        cDNA_read = fastq + "{sample}.R2.fastq.gz",
+        bc_read = fastq + "{sample}_R1.fastq.gz",
+        cDNA_read = fastq + "{sample}_R2.fastq.gz",
         ref_genome = GenomeIndex,
         whitelist = output + "barcodes_for_star.txt"
     output:
