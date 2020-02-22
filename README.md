@@ -107,3 +107,5 @@ There are two pieces of information that most users will need:
 * count matrices
 
 The html report is in `reports/`. The count matrices are in `output/{project_name}_Solo.out`. There are two types of count matrices: `filtered` and `raw`. The raw matrix contains all valid barcodes, while filtered contains only barcodes with a certain number of UMI. This threshold is determined by `STARsolo` using a hueristic approach.
+
+Please report any issues you run into via GitHub.
