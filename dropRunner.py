@@ -67,7 +67,7 @@ snakemake \\
         --mem={{cluster.mem}} \\
         --nodes={{cluster.n}} \\
         --tasks-per-node={{cluster.tasks}} \\
-        --partition=broadwl \\
+        --partition={{cluster.partition}} \\
         --job-name={{cluster.name}} \\
     --output={{cluster.logfile}}" \\
     -s {install_dir}/{smk} \\
