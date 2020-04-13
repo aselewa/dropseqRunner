@@ -3,9 +3,10 @@
     {
       "mem" : 2000,
       "n" : 1,
-	    "tasks" : 1,
+      "tasks" : 1,
       "name" : "{rule}-{wildcards}",
-	    "logfile": "log/snake-{rule}-{wildcards}-%j.out"
+      "logfile": "log/snake-{rule}-{wildcards}-%j.out",
+      "partition": "broadwl"
     },
     "fastqc" :
     {
