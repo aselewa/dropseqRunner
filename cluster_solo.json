@@ -6,7 +6,8 @@
       "tasks" : 1,
       "name" : "{rule}-{wildcards}",
       "logfile": "log/snake-{rule}-{wildcards}-%j.out",
-      "partition": "broadwl"
+      "partition": "griffendor",
+      "account": "pi-voldemort"
     },
     "fastqc" :
     {
