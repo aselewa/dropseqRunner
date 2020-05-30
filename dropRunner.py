@@ -68,8 +68,9 @@ snakemake \\
         --nodes={{cluster.n}} \\
         --tasks-per-node={{cluster.tasks}} \\
         --partition={{cluster.partition}} \\
+        --account={{cluster.account}} \\
         --job-name={{cluster.name}} \\
-    --output={{cluster.logfile}}" \\
+        --output={{cluster.logfile}}" \\
     -s {install_dir}/{smk} \\
     --configfile {work_dir}/config.yaml
 """
