@@ -1,21 +1,20 @@
 name:
     dropRunner
 channels:
-    - conda-forge
     - bioconda
-    - default
+    - conda-forge
 dependencies:
-    - fastqc
-    - snakemake
+    - fastqc==0.11.9
+    - snakemake==5.3.0
     - umi_tools >= 0.5.1
     - STAR >=2.7.3a-0
-    - samtools
-    - multiqc
-    - ucsc-gtftogenepred
-    - cutadapt
-    - picard
+    - samtools==1.10
+    - multiqc==1.9
+    - ucsc-gtftogenepred==377
+    - cutadapt==2.10
+    - picard==2.23.3
     - python >=3.6
-    - r-base
-    - r-rmarkdown
-    - r-ggplot2
-    - r-kableextra
+    - r-base==4.0.2
+    - r-rmarkdown==2.3
+    - r-ggplot2==3.3.2
+    - r-kableextra==1.1.0
