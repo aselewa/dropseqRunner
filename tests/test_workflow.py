@@ -31,6 +31,7 @@ def test_configurator():
 
 if __name__ == "__main__":
     os.system(f'mkdir {config.work_dir()}')
+    os.system(f'mkdir {config.indeces()}')
     test_conda()
     test_makeref()
     test_configurator()
