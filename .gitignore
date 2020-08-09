@@ -1,0 +1,5 @@
+.snakemake/
+tests/results_to_compare/
+*__pycache__/
+log/
+.DS_Store

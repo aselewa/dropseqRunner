@@ -5,13 +5,17 @@ git clone git@github.com:aselewa/dropseqRunner.git
 cd dropseqRunner
 conda env create -f environment.yaml
 conda activate dropRunner
-python makeref.py --fasta path/to/fasta \
-                  --gtf /path/to/gtf \
-                  --outDir name_of_output_dir
+
+STAR --runThreadN 4 --runMode genomeGenerate --genomeDir $OUTDIR --genomeFastaFiles  $FASTA --sjdbGTFfile $ANNOTATION_GTF 
 python dropRunner.py  --R1 path/to/{}.R1.fastq.gz \
                       --R2 path/to/{}.R2.fastq.gz \
-                      --indices path/to/makeref/indices \
-                      --protocol drop
+                      --indices $OUTDIR \
+                      --protocol drop/10x-v3/10x-v2
+```
+
+If the above give you any trouble, run the demo to ensure everything is installed properly:
+```
+python tests/run_workflow.py
 ```
 
 ## Getting started
@@ -62,7 +66,7 @@ conda activate dropRunner
 
 ### 1. Make reference genome indices
 
-Use `makeref.py` to create indices for your reference genome of interest. You will need two things:
+Use `STAR` to create indices for your reference genome of interest. You will need two things:
 
 * fasta file of reference genome
 * reference genome GTF annotations
@@ -70,14 +74,8 @@ Use `makeref.py` to create indices for your reference genome of interest. You wi
 You can get both of these from [GENCODE](https://www.gencodegenes.org/human/) for humans.
 
 ```
-python makeref.py --fasta refgenome.fa
-                  --gtf annots.gtf
-                  --outDir myref_indices
-                  --cluster
+STAR --runThreadN 4 --runMode genomeGenerate --genomeDir $OUTDIR --genomeFastaFiles  $FASTA --sjdbGTFfile $ANNOTATION_GTF 
 ```
-
-This will run on the RCC midway2 using the `broadwl` partition. If you are not at UChicago, do not include the cluster flag. 
-This command will create a folder called `myref_indices`. You will need this folder in the next step.
 
 ### 2. Run the pipeline
 
@@ -86,7 +84,7 @@ Use `dropRunner.py` on your fastq files to generate count matrices. Use the `pro
 ```
 python dropRunner.py  --R1 path/to/{}.R1.fastq.gz
                       --R2 path/to/{}.R2.fastq.gz
-                      --indices myref_indices
+                      --indices $OUTDIR
                       --cluster
                       --sample my_example_project
 ```

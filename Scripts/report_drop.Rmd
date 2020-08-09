@@ -21,7 +21,6 @@ theme_set(theme_bw())
 config <- read.delim('config.yaml',sep=':', header=F, stringsAsFactors = F)
 solo.out.sum <- read.delim(paste0('output/',params$sampleID,'_Solo.out/Gene/Summary.csv'),sep=',', header=F, stringsAsFactors = F)
 UMIperCell <- read.delim(paste0('output/',params$sampleID,'_Solo.out/Gene/UMIperCellSorted.txt'), sep=',', header=F, stringsAsFactors = F)
-picard <- read.delim(paste0('output/qc_data/',params$sampleID,'_RNAmetrics.picard.txt'), skip = 6)[1,]
 
 ```
 
@@ -75,27 +74,3 @@ ggplot(UMIperCell, aes(x=r, y=V1, color=type)) + geom_point() +
 ```
 
 ***
-
-## Mapping
-
-```{r, echo=F}
-genic <- picard$PCT_CODING_BASES + picard$PCT_UTR_BASES + picard$PCT_INTRONIC_BASES
-exonic <-  picard$PCT_CODING_BASES + picard$PCT_UTR_BASES
-intronic <- picard$PCT_INTRONIC_BASES
-intergenic <- picard$PCT_INTERGENIC_BASES
-pct_cov <- as.data.frame(rbind(genic, exonic, intronic, intergenic)) 
-colnames(pct_cov) <- "pct_coverage"
-pct_cov$feature <- c("genic", "exonic", "intronic", "intergenic")
-
-ggplot(pct_cov, aes(feature, pct_coverage, label = pct_coverage)) +
-  geom_bar(stat = "Identity", position = "dodge", fill = "lightblue") +
-  scale_x_discrete(limits=pct_cov$feature) +
-  ylab("Fraction of Reads") +
-  xlab("") +
-  geom_text(size = 3, position = position_stack(vjust = 0.5)) + 
-  theme(text = element_text(size=14),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank())
-```
-
-
