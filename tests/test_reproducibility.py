@@ -26,5 +26,8 @@ def compare_dir(dir1, dir2, ignore=None):
     return True
 
 if __name__ == "__main__":
-    assert compare_dir(config.expected_dir(), config.mtx_dir(), ignore=['.DS_Store']), 'outputs are NOT the same!'
-    print('Outputs are identical!')
+    print("\n\n")
+    print("**********************************************")
+    assert compare_dir(config.expected_dir(), config.mtx_dir(), ignore=['.DS_Store']), 'outputs are NOT the same!. Test workflow did not run properly. Make sure your conda environment was created using the given environment file.\n*********************************************\n\n'
+    print('Yay! Outputs are identical and test workflow ran properly.')
+    print("**********************************************\n\n")
