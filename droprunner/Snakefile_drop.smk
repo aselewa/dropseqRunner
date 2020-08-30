@@ -99,7 +99,7 @@ rule align:
             --soloCBstart {params.CBstart} --soloCBlen {params.CBlen} --soloUMIstart {params.UMIstart} --soloUMIlen {params.UMIlen} \
             --soloStrand {params.strand} --soloFeatures Gene --soloUMIdedup 1MM_Directional \
             --soloOutFileNames Solo.out/ "genes.tsv" "barcodes.tsv" "matrix.mtx" "matrixGeneFull.mtx" \
-            --readFilesIn {input.cDNA_read} {input.bc_read} --readFilesCommand zcat --outFilterMultimapNmax {params.multimap} --outFileNamePrefix {pd}output/{wildcards.sample}_ --limitBAMsortRAM 48000000000 > {output.bam}
+            --readFilesIn {input.cDNA_read} {input.bc_read} --readFilesCommand zcat --outFilterMultimapNmax {params.multimap} --outFileNamePrefix {pd}output/{wildcards.sample}_ --limitBAMsortRAM 48000000000 --runDirPerm "All_RWX" > {output.bam}
         """
 
 rule index_bam:
