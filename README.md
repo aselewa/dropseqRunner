@@ -15,8 +15,9 @@ python dropRunner.py  --R1 path/to/{}.R1.fastq.gz \
 
 If the above give you any trouble, run the demo to ensure everything is installed properly:
 ```
-python tests/run_workflow.py
+make run_test_workflow
 ```
+Look for a message at the end that tells you whether the demo ran properly or not.
 
 ## Getting started
 
