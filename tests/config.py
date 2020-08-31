@@ -14,7 +14,7 @@ def work_dir():
     return os.path.join(src_dir, 'results_to_compare')
 
 def mtx_dir():
-    return os.path.join(work_dir(), 'output/pbmc_test_v3_Solo.out/Gene/filtered')
+    return os.path.join(work_dir(), 'output/test_0_Solo.out/Gene/filtered')
 
 def fasta_file():
     return os.path.join(resources_dir(), 'chr22.fa')
