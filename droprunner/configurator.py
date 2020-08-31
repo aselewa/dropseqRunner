@@ -101,23 +101,27 @@ def main(R1, R2, indices, protocol, cluster, sample, work_dir):
     os.system(f'mkdir -p {FASTQ_DIR}')
     
     r1, r2 = R1.split(','), R2.split(',') 
+    
     assert len(r1) == len(r2), \
     'Number of files in read 1 and read 2 are not the same. Please provide a read 1 and read 2 file for each experiment.'
-    if check_gzip(r1) and check_gzip(r2):
-
-        for R1,R2 in zip(r1, r2):
-            f1_name = R1.split('/')[-1]
-            f2_name = R2.split('/')[-1]
-            
-            assert 'R1' in f1_name, 'R1 filename does not contain "R1". Did you give R2 twice?'
-            assert 'R2' in f2_name, 'R2 filename does not contain "R2". Did you give R1 twice?'
-
-            os.system(f'ln -s {os.path.abspath(R1)} {FASTQ_DIR}/{f1_name}')
-            os.system(f'ln -s {os.path.abspath(R2)} {FASTQ_DIR}/{f2_name}')
-    else:
-        msg = 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
-        raise TypeError(msg)
-
+    
+    assert check_gzip(r1) and check_gzip(r2), 'File format not recognized. Please make sure you provide gzipped fastq files (files should end with .fastq.gz)'
+    
+    i = 0
+    for R1,R2 in zip(r1, r2):
+        
+        check_f1_name = R1.split('/')[-1]
+        check_f2_name = R2.split('/')[-1]
+        assert 'R1' in check_f1_name, 'R1 filename does not contain "R1". Did you give R2 twice?'
+        assert 'R2' in check_f2_name, 'R2 filename does not contain "R2". Did you give R1 twice?'
+        
+        f1_name = f'{sample}_{i}.R1.fastq.gz'
+        f2_name = f'{sample}_{i}.R1.fastq.gz'
+        
+        os.system(f'ln -s {os.path.abspath(R1)} {FASTQ_DIR}/{f1_name}')
+        os.system(f'ln -s {os.path.abspath(R2)} {FASTQ_DIR}/{f2_name}')
+        i +=1 
+        
     if cluster:
         os.system('sbatch submit_snakemake.sbatch')
         print('Snakemake job has been submitted to the cluster.\nType "qstat -u CNETID" to see the progress of the snakefile.')
