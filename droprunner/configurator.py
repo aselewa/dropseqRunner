@@ -115,8 +115,8 @@ def main(R1, R2, indices, protocol, cluster, sample, work_dir):
         assert 'R1' in check_f1_name, 'R1 filename does not contain "R1". Did you give R2 twice?'
         assert 'R2' in check_f2_name, 'R2 filename does not contain "R2". Did you give R1 twice?'
         
-        f1_name = f'{sample}_{i}.R1.fastq.gz'
-        f2_name = f'{sample}_{i}.R1.fastq.gz'
+        f1_name = f'{sample}_{i}_R1.fastq.gz'
+        f2_name = f'{sample}_{i}_R1.fastq.gz'
         
         os.system(f'ln -s {os.path.abspath(R1)} {FASTQ_DIR}/{f1_name}')
         os.system(f'ln -s {os.path.abspath(R2)} {FASTQ_DIR}/{f2_name}')
