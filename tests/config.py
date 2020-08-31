@@ -25,8 +25,8 @@ def gtf_file():
 def fastq_files():
     return [os.path.join(resources_dir(), 'pbmc_test_v3_R1.fastq.gz'), os.path.join(resources_dir(), 'pbmc_test_v3_R2.fastq.gz')]
 
-def indeces():
-    return os.path.join(work_dir(), 'test_STAR_indeces')
+def indices():
+    return os.path.join(work_dir(), 'test_STAR_indices')
     
 def overhang():
     return 99
