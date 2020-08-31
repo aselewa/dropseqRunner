@@ -23,6 +23,7 @@ if __name__ == '__main__':
     if args.R1 == None or args.R2 == None or args.indices == None or args.protocol == None:
          raise Exception('Required arguments not provided. Please provide R1, R2, an indices folder name, and a protocol')
     
+    assert args.sample is not None, 'Please provide a sample name/prefix!'
     assert os.path.isfile(args.R1), "Please provide a gzipped fastq file for read 1"
     assert os.path.isfile(args.R2), "Please provide a gzipped fastq files for read 2."
     assert os.path.isdir(args.indices), 'Please provide indices made by the makeref.py function!'
@@ -30,8 +31,6 @@ if __name__ == '__main__':
     
     if args.cluster == None:
         args.cluster = False
-    if args.sample == None:
-        args.sample = f'{args.protocol}-experiment'
 
     R1, R2, indices, protocol, cluster, sample = args.R1, args.R2, args.indices, args.protocol, args.cluster, args.sample
     configurator.main(R1=R1, 
