@@ -11,6 +11,7 @@ python dropRunner.py  --R1 path/to/{}.R1.fastq.gz \
                       --R2 path/to/{}.R2.fastq.gz \
                       --indices $OUTDIR \
                       --protocol drop/10x-v3/10x-v2
+                      --sample pbmc_v3
 ```
 
 If the above give you any trouble, run the demo to ensure everything is installed properly:
@@ -95,8 +96,6 @@ python dropRunner.py  --R1 path/to/{}.R1.fastq.gz
 ```
 R1=$(ls *.R1.fastq.gz | paste -sd,)
 ```
-
-**NOTE 2**: Make sure your fastq files match the following pattern: **{project_name}_R1.fastq.gz** where {project_name} is a unique identifider.
 
 ### 3. Output
 
