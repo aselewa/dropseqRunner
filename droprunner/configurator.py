@@ -20,11 +20,11 @@ def check_gzip(files):
             return False
     return True
 
-def make_config(indeces, protocol, sample, work_dir):
+def make_config(indices, protocol, sample, work_dir):
      
     # make sure no trailing slash
-    if indeces[-1] == '/':
-        indeces = indeces[:-1]
+    if indices[-1] == '/':
+        indices = indices[:-1]
     if work_dir[-1] == '/':
         work_dir = work_dir[:-1]
 
@@ -36,7 +36,7 @@ def make_config(indeces, protocol, sample, work_dir):
         barcodes = None
 
     config=f"""proj_dir: {work_dir}/
-genome_index: {indeces}/
+genome_index: {indices}/
 scripts: {install_dir}/scripts/
 cell_num: 10000
 barcode: "CCCCCCCCCCCCNNNNNNNN"
@@ -82,7 +82,7 @@ snakemake \\
     with open(outpath, 'w') as f:
         f.write(cmd)
 
-def main(R1, R2, indeces, protocol, cluster, sample, work_dir):
+def main(R1, R2, indices, protocol, cluster, sample, work_dir):
     
     try:
         smk = protocol_map[protocol]
@@ -94,7 +94,7 @@ def main(R1, R2, indeces, protocol, cluster, sample, work_dir):
     CONFIG_PATH = os.path.join(work_dir, 'config.yaml')
     CLUSTER_CONFIG_PATH = os.path.join(install_dir, 'cluster_solo.json')
 
-    make_config(indeces, protocol, sample, work_dir)
+    make_config(indices, protocol, sample, work_dir)
     make_submit_snakemake(SMK_PATH, CONFIG_PATH, CLUSTER_CONFIG_PATH)
 
     FASTQ_DIR = os.path.join(work_dir, 'fastq')
