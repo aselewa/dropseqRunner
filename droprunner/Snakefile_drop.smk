@@ -112,7 +112,7 @@ rule index_bam:
 
 rule make_report:
      input:
-         qc_data + "{sample}_RNAmetrics.picard.txt",
+        output + "{sample}_Aligned.sortedByCoord.out.bam"
      output:
          reports + "{sample}/{sample}_pipeline_report.html"
      shell:
