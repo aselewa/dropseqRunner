@@ -71,6 +71,7 @@ rule align:
         CBlen = 16,
         UMIstart = 17,
         UMIlen = 12,
+        barcodeReadLength = 0,
         multimap = 1,
         threads = 8,
         strand = "Forward"
@@ -78,7 +79,7 @@ rule align:
         """
         STAR --runThreadN {params.threads} --genomeDir {input.ref_genome} --outSAMtype BAM SortedByCoordinate \
              --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM --outStd BAM_SortedByCoordinate --soloType Droplet --soloCBwhitelist {input.whitelist} \
-            --soloCBstart {params.CBstart} --soloCBlen {params.CBlen} --soloUMIstart {params.UMIstart} --soloUMIlen {params.UMIlen} \
+            --soloCBstart {params.CBstart} --soloCBlen {params.CBlen} --soloUMIstart {params.UMIstart} --soloUMIlen {params.UMIlen} --soloBarcodeReadLength {params.barcodeReadLength} \
             --soloStrand {params.strand} --soloFeatures Gene --soloUMIdedup 1MM_Directional \
             --soloOutFileNames Solo.out/ "genes.tsv" "barcodes.tsv" "matrix.mtx" "matrixGeneFull.mtx" \
             --readFilesIn {input.cDNA_read} {input.bc_read} --readFilesCommand zcat --outFilterMultimapNmax {params.multimap} --outFileNamePrefix {pd}output/{wildcards.sample}_ --limitBAMsortRAM 48000000000 --runDirPerm "All_RWX" > {output.bam}
